@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- 여긴 초기 테스트용을 정의한 부분..실제 게시판의 내용은 이 주석 블락 이후부터 재정의함.-->
+<!-- /* 
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+   <th:block th:fragment="content">
+      <h1>GuestBook List Page</h1>
+   </th:block>
+</th:block>
+*/-->
+
+
+
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+
+   <th:block th:fragment="content">
+      <h1 class="mt-4">Guest Book List Page</h1>
+      <!-- 등록 버튼..이건 리스트 후에 작업 할것.. -->
+		<span>
+			<a th:href="@{/guestbook/register}">
+				<button type="button" class="btn btn-outline-primary">
+				REGISTER
+				</button>
+			</a>
+		</span>
+
+
+      <table class="table table=striped">
+         <thead>
+            <tr>
+               <th scope="col">#</th>
+               <th scope="col">GNO</th>
+               <th scope="col">Title</th>
+               <th scope="col">RegDate</th>
+            </tr>
+         </thead>
+
+         <!-- PageResultDTO.dtoList 의 이름으로 호출한다.. -->
+         <tbody>
+            <tr th:each="dto : ${list.dtoList}">
+               <th scope="row">
+                   <a th:href="@{/guestbook/read(ago=${dto.ago}, page=${list.page})}">[[${dto.ago}]]</th>
+               <td>[[${dto.ago}]]</td>
+               <td>[[${dto.title}]]</td>
+               <td>[[${#temporals.format(dto.regDate,'yyyy/MM/dd')}]]</td>
+            </tr>
+         </tbody>
+      </table>
+
+      <ul class="pagination h-100 justify-content-center align-items-center">
+
+         <li class="page-item" th:if="${list.prev}"><a class="page-link"
+            th:href="@{/guestbook/list(page=${list.start -1})}" th:tabindex="-1">prev</a>
+         </li>
+         <li class="page-item+${list.page==page?'active':''}"
+            th:each="page: ${list.pageList} "><a class="page-link"
+            th:href="@{/guestbook/list(page=${page})}">[[${page}]]</a></li>
+
+         <li class="page-item" th:if="${list.next}"><a class="page-link"
+            th:href="@{/guestbook/list(page=${list.end +1})}">Next</a></li>
+      </ul>
+      
+	 <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">글등록 결과</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                        <p th:if="${msg > 0}">[[${msg}]]글이 등록 되었습니다.</p>
+                   		<p th:if="${msg == 0}">[[${msg}]]글이 등록 되었습니다.</p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <script>
+    //글 신규 등록후 스크립트 처리 th:Inline 속성..
+
+    var msg = [[${msg}]];
+
+    console.log(msg);
+
+    if(msg){
+        $(".modal").modal();
+}
+</script>
+   </th:block>
+
+
+</th:block>
